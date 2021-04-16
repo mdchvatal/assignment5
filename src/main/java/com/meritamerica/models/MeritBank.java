@@ -9,14 +9,16 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class MeritBank {
 	private static final double CHECKING_INTEREST = 0.0001;
 	private static final double SAVINGS_INTEREST = 0.01;
 	private static ArrayList<String> fileStringArrayList = new ArrayList<String>();
-	private static AccountHolder[] accountHolders = new AccountHolder[20];
+	private static List<AccountHolder> accountHolders = new ArrayList<AccountHolder>();
+	private static AccountHolder[] accountHoldersArr = new AccountHolder[20];
 	private static int ahArrayCounter = 0;
-	private static CDOffering[] cdOfferings;
+	private static List<CDOffering> cdOfferings = new ArrayList<CDOffering>();
 	private static double totalBalances;
 	private static int numberOfCDOfferings;
 	private static long accountNumber;
@@ -52,16 +54,6 @@ public class MeritBank {
 			return false;
 		}
 	} 
-	
-	static boolean writeToFile(String fileName) {
-		try (FileWriter fileWriter = new FileWriter(fileName);
-				PrintWriter printWriter = new PrintWriter(fileWriter)) {
-			fileStringArrayList.forEach((listString) -> printWriter.println(listString));
-			return true;
-		} catch (IOException ioe) {System.out.println("Error");}
-		throw new NumberFormatException();
-		//return false;	
-	}
 	
 	public static void doStuffWithFile(){
 		int lineCounter = 0;
@@ -160,39 +152,43 @@ public class MeritBank {
 		
 	}
 	
+	static boolean writeToFile(String fileName) {
+		try (FileWriter fileWriter = new FileWriter(fileName);
+				PrintWriter printWriter = new PrintWriter(fileWriter)) {
+			fileStringArrayList.forEach((listString) -> printWriter.println(listString));
+			return true;
+		} catch (IOException ioe) {System.out.println("Error");}
+		throw new NumberFormatException();
+		//return false;	
+	}
 
-	
 	public static void addAccountHolder(AccountHolder accountHolder) {
-		accountHolders[ahArrayCounter] = accountHolder;
+		accountHolders.add(accountHolder);
 		ahArrayCounter++;
 	}
 	
-	public static AccountHolder[] getAccountHolders() {
+	public static List<AccountHolder> getAccountHolders() {
 		return accountHolders;
 	}
 	
-	public static AccountHolder[] sortAccountHolders() {
-	AccountHolder[] tempArray = new AccountHolder[numberOfAccountHolders];
-		for (int i= 0; i < tempArray.length; i++) {
-			tempArray[i] = accountHolders[i];
-		}
-		Arrays.sort(tempArray);
-		return tempArray;
+	public static List<AccountHolder> sortAccountHolders() {
+		Collections.sort(accountHolders);
+		return accountHolders;
 		
 	}
 
-	public static CDOffering[] getCDOfferings() {
+	public static List<CDOffering> getCDOfferings() {
 			return cdOfferings;
 	}
 	
 	public static CDOffering getBestCDOffering(double depositAmount) {
-		Collections.sort(Arrays.asList(cdOfferings));
-		return cdOfferings[0];
+		Collections.sort(cdOfferings);
+		return cdOfferings.get(0);
 	}
 	
 	public static CDOffering getSecondBestCDOffering(double depositAmount) {
-		Collections.sort(Arrays.asList(cdOfferings));
-		return cdOfferings[1];
+		Collections.sort(cdOfferings);
+		return cdOfferings.get(1);
 	}
 	
 	public static void clearCDOfferings() {
@@ -201,9 +197,8 @@ public class MeritBank {
 	}
 	
 	public static void setCDOfferings(CDOffering[] offerings) {
-		cdOfferings = new CDOffering[offerings.length];
 		for (int i = 0; i < offerings.length; i++) {
-			cdOfferings[i] = offerings[i];
+			cdOfferings.add(offerings[i]);
 		}	 	
 	}
 	
@@ -217,8 +212,8 @@ public class MeritBank {
 	
 	public static double getTotalBalances(AccountHolder[] holders) {
 		MeritBank.totalBalances = 0;
-		for (int i = 0; i < ahArrayCounter; i++) {
-			MeritBank.totalBalances += MeritBank.accountHolders[i].getCombinedBalance();
+		for (AccountHolder accountHolder : accountHolders) {
+			MeritBank.totalBalances += accountHolder.getCombinedBalance();
 		}
 		return MeritBank.totalBalances;
 	}
@@ -287,30 +282,20 @@ public class MeritBank {
 	}*/
 	
 	public static BankAccount getBankAccount(long accountNum) {
-		BankAccount tempAccount;
-		for (int i = 0; i < numberOfAccountHolders; i++) {
-			for (int j = 0; j < accountHolders[i].getCheckingAccounts().length; j++) {
-				BankAccount[] tempAccArr = accountHolders[i].getCheckingAccounts();
-				if (accountNum == tempAccArr[j].getAccountNumber()) {
-					tempAccount = new CheckingAccount();
-					tempAccount = tempAccArr[j];
-					return tempAccount;
+		for (AccountHolder accountHolder : accountHolders) {
+			for (CheckingAccount checkingAccount : accountHolder.getCheckingAccounts()) {
+				if (accountNum == checkingAccount.getAccountNumber()) {
+					return checkingAccount;
 				}
 			}
-			for (int k = 0; k < accountHolders[i].getSavingsAccounts().length; k++) {
-				BankAccount[] tempAccArr = accountHolders[i].getSavingsAccounts();
-				if (accountNum == tempAccArr[k].getAccountNumber()) {
-					tempAccount = new SavingsAccount();
-					tempAccount = tempAccArr[k];
-					return tempAccount;
+			for (SavingsAccount savingsAccount : accountHolder.getSavingsAccounts()) {
+				if (accountNum == savingsAccount.getAccountNumber()) {
+					return savingsAccount;
 				}
 			}
-			for (int l = 0; l < accountHolders[i].getSavingsAccounts().length; l++) {
-				BankAccount[] tempAccArr = accountHolders[i].getCDAccounts();
-				if (accountNum == tempAccArr[l].getAccountNumber()) {
-					tempAccount = new SavingsAccount();
-					tempAccount = tempAccArr[l];
-					return tempAccount;
+			for (CDAccount cdAccount : accountHolder.getCDAccounts()) {
+				if (accountNum == cdAccount.getAccountNumber()) {
+					return cdAccount;
 				}
 			}
 		}

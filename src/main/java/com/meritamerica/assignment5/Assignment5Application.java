@@ -1,13 +1,13 @@
-package com.meritamerica.assignment4;
+package com.meritamerica.assignment5;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Assignment4Application {
+public class Assignment5Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Assignment4Application.class, args);
+		SpringApplication.run(Assignment5Application.class, args);
 	}
 
 }

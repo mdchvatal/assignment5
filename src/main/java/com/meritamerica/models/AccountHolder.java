@@ -1,27 +1,42 @@
 package com.meritamerica.models;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class AccountHolder implements Comparable<AccountHolder>{
+	private static int nextId = 1;
+	private int id;
 
-	private double checkingBalance;
-	private double savingsBalance;
-	private double CDBalance;
 	private double combinedBalance;
-	private CDAccount[] cdAccounts = new CDAccount[10];
-	private SavingsAccount[] savingsAccounts = new SavingsAccount[10];
-	private CheckingAccount[] checkingAccounts = new CheckingAccount[10];
+	private List<CDAccount> cdAccounts = new ArrayList<CDAccount>();
+	private List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
+	private List<CheckingAccount> checkingAccounts = new ArrayList<CheckingAccount>();
+	
+	@NotBlank
+	@NotNull
 	private String firstName;
 	private String middleName;
+	@NotBlank
+	@NotNull
 	private String lastName;
+	@NotBlank
+	@NotNull
 	private String ssn;
 	private int numberOfCheckingAccounts = 0;
 	private int numberOfSavingsAccounts = 0;
 	private int numberOfCDAccounts = 0;
-	private long accountNumber;
+	//private long accountID;
 	
 	public AccountHolder() {
-		
+		this.firstName = "";
+		this.middleName = "";
+		this.lastName = "";
+		this.ssn = "";
+		this.id = nextId++;
 	}
 	
 	public AccountHolder(String firstName, String middleName, String lastName, String ssn) {
@@ -29,6 +44,7 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		this.middleName = middleName;
 		this.lastName = lastName;
 		this.ssn = ssn;
+		this.id = nextId++;
 	}
 	
 	public String getFirstName() {
@@ -63,30 +79,41 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		this.ssn = ssn;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsFraudSuspicionLimitException {
 		if (openingBalance >= 1000) {
 			throw new ExceedsFraudSuspicionLimitException();
-		}
-		CheckingAccount account = new CheckingAccount(openingBalance);
-		account.setInterestRate(MeritBank.getCheckingInterest());
-		if (((this.getCheckingBalance() + this.getSavingsBalance()) + openingBalance < 250000)) {
-			checkingAccounts[numberOfCheckingAccounts++] = account;
-			return account;
 		} else {
-			return account;
+			CheckingAccount account = new CheckingAccount(openingBalance);
+			account.setInterestRate(MeritBank.getCheckingInterest());
+			if (((this.getCheckingBalance() + this.getSavingsBalance()) + openingBalance < 250000)) {
+				checkingAccounts.add(account);
+				numberOfCheckingAccounts++;
+				return account;
+			} else {
+				return account;
+			}
 		}
 	}
 	
 	public CheckingAccount addCheckingAccount(BankAccount checkingAccount) {
 		if ((this.getCheckingBalance() + this.getSavingsBalance()) + checkingAccount.getBalance() < 250000) {
-			checkingAccounts[numberOfCheckingAccounts++] = (CheckingAccount) checkingAccount;
+			checkingAccounts.add((CheckingAccount) checkingAccount);
+			numberOfCheckingAccounts++;
 			return (CheckingAccount) checkingAccount;
 		} else {
 			return (CheckingAccount) checkingAccount;
 		}
 	}
 		
-	public CheckingAccount[] getCheckingAccounts() {
+	public List<CheckingAccount> getCheckingAccounts() {
 		return checkingAccounts;
 	}
 		
@@ -96,10 +123,9 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		
 	public double getCheckingBalance() {
 		double tempBalance = 0;
-		for (int i = 0; i < (numberOfCheckingAccounts); i++) {
-			tempBalance += checkingAccounts[i].getBalance();
+		for (CheckingAccount checkingAccount : checkingAccounts) {
+			tempBalance += checkingAccount.getBalance();
 		}
-		//checkingBalance;
 		return tempBalance;
 	}
 		
@@ -109,7 +135,8 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		}
 		SavingsAccount account = new SavingsAccount(openingBalance);
 		if (((this.getCheckingBalance() + this.getSavingsBalance()) + openingBalance <= 250000)) {
-			savingsAccounts[numberOfSavingsAccounts++] = account;
+			savingsAccounts.add(account);
+			numberOfSavingsAccounts++;
 			return account;
 		} else {
 			return  account;
@@ -118,14 +145,15 @@ public class AccountHolder implements Comparable<AccountHolder>{
 	
 	public SavingsAccount addSavingsAccount(BankAccount savingsAccount) {
 		if ((this.getCheckingBalance() + this.getSavingsBalance()) + savingsAccount.getBalance() < 250000) {
-			savingsAccounts[numberOfSavingsAccounts++] = (SavingsAccount) savingsAccount;
+			savingsAccounts.add((SavingsAccount) savingsAccount);
+			numberOfSavingsAccounts++;
 			return (SavingsAccount) savingsAccount;
 		} else {
 			return (SavingsAccount) savingsAccount;
 		}
 	}
 	
-	public SavingsAccount[] getSavingsAccounts() {
+	public List<SavingsAccount> getSavingsAccounts() {
 		return savingsAccounts;
 	}
 	
@@ -135,8 +163,8 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		
 	public double getSavingsBalance() {
 		double tempBalance = 0;
-		for (int i = 0; i < (numberOfSavingsAccounts); i++) {
-			tempBalance += savingsAccounts[i].getBalance();
+		for (SavingsAccount savingsAccount : savingsAccounts) {
+			tempBalance += savingsAccount.getBalance();
 		}
 		return tempBalance;
 	}
@@ -145,17 +173,20 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		if (openingBalance >= 1000) {
 			throw new ExceedsFraudSuspicionLimitException();
 		}
-		cdAccounts[numberOfCDAccounts] = new CDAccount(offering, openingBalance);
-		return cdAccounts[numberOfCDAccounts++];
+		CDAccount cdAccount = new CDAccount(offering, openingBalance);
+		cdAccounts.add(cdAccount);
+		numberOfCDAccounts++;
+		return cdAccount;
 		
 	}
 		
 	public CDAccount addCDAccount(BankAccount cdAccount) {
-		cdAccounts[numberOfCDAccounts] = (CDAccount) cdAccount;
-		return cdAccounts[numberOfCDAccounts++];
+		cdAccounts.add((CDAccount) cdAccount);
+		numberOfCDAccounts++;
+		return (CDAccount) cdAccount;
 	}
 		
-	public CDAccount[] getCDAccounts() {
+	public List<CDAccount> getCDAccounts() {
 		return cdAccounts;
 	}
 		
@@ -165,10 +196,9 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		
 	public double getCDBalance() {
 		double tempBalance = 0;
-		for (int i = 0; i < (numberOfCDAccounts); i++) {
-			tempBalance += cdAccounts[i].getBalance();
+		for (CDAccount cdAccount : cdAccounts) {
+			tempBalance += cdAccount.getBalance();
 		}
-		//CDBalance = tempBalance;
 		return tempBalance;
 	}
 		

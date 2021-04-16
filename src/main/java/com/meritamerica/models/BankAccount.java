@@ -21,12 +21,15 @@ public abstract class BankAccount {
 	public BankAccount(double openingBalance) {
 		this.balance = openingBalance;
 		this.futureBalance = openingBalance;
+		this.accountNumber = MeritBank.getNextAccountNumber();
+		this.accountOpenedOn = new Date();
 	}
 	
 	public BankAccount(double balance, double interestRate) {
 		this.balance = balance;
 		this.interestRate = interestRate;
 		MeritBank.getNextAccountNumber();
+		this.accountOpenedOn = new Date();
 	}
 	
 	public BankAccount(double balance, double interestRate, Date accountOpenedOn) {
@@ -40,6 +43,7 @@ public abstract class BankAccount {
 		this.accountNumber = accountNumber;
 		this.balance = balance;
 		this.interestRate = interestRate;
+		this.accountOpenedOn = new Date();
 	}
 	
 	public BankAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn) {
@@ -125,7 +129,8 @@ public abstract class BankAccount {
 	}
 
 	@Override
-	public String toString() {SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+	public String toString() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 		String dateString = dateFormatter.format(accountOpenedOn);
 		return accountNumber + "," + balance + "," + interestRate
 				+ "," + dateString;
