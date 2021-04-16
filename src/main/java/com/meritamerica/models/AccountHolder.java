@@ -16,15 +16,17 @@ public class AccountHolder implements Comparable<AccountHolder>{
 	private List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
 	private List<CheckingAccount> checkingAccounts = new ArrayList<CheckingAccount>();
 	
-	@NotBlank
-	@NotNull
+	@NotBlank(message="First name field must not be blank")
+	@NotNull(message="First name field must not be blank")
 	private String firstName;
 	private String middleName;
-	@NotBlank
-	@NotNull
+	
+	@NotBlank(message="Last name field must not be blank")
+	@NotNull(message="Last name field must not be blank")
 	private String lastName;
-	@NotBlank
-	@NotNull
+	
+	@NotBlank(message="SSN field must not be blank")
+	@NotNull(message="SSN field must not be blank")
 	private String ssn;
 	private int numberOfCheckingAccounts = 0;
 	private int numberOfSavingsAccounts = 0;
@@ -87,7 +89,7 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		this.id = id;
 	}
 	
-	public CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsFraudSuspicionLimitException {
+	public CheckingAccount addCheckingAccount(double openingBalance) {
 		if (openingBalance >= 1000) {
 			throw new ExceedsFraudSuspicionLimitException();
 		} else {
