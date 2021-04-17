@@ -10,31 +10,35 @@ public class SavingsAccount extends BankAccount {
 
 	public SavingsAccount() {
 		this.setInterestRate(MeritBank.getSavingsInterest());
+		this.accountNumber = MeritBank.getNextAccountNumber();
+		this.accountOpenedOn = new Date();
 	}
 
 	public SavingsAccount(double openingBalance) {
 		super(openingBalance);
 		this.setInterestRate(MeritBank.getSavingsInterest());
+		this.accountNumber = MeritBank.getNextAccountNumber();
+		this.accountOpenedOn = new Date();
 	}
 
 	public SavingsAccount(double balance, double interestRate) {
 		super(balance, interestRate);
-		// TODO Auto-generated constructor stub
+		this.accountNumber = MeritBank.getNextAccountNumber();
+		this.accountOpenedOn = new Date();
 	}
 
 	public SavingsAccount(double balance, double interestRate, Date accountOpenedOn) {
 		super(balance, interestRate, accountOpenedOn);
-		// TODO Auto-generated constructor stub
+		this.accountNumber = MeritBank.getNextAccountNumber();
 	}
 
 	public SavingsAccount(long accountNumber, double balance, double interestRate) {
 		super(accountNumber, balance, interestRate);
-		// TODO Auto-generated constructor stub
+		this.accountOpenedOn = new Date();
 	}
 
 	public SavingsAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn) {
 		super(accountNumber, balance, interestRate, accountOpenedOn);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public static SavingsAccount readFromString(String accountData) throws ParseException{

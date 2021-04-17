@@ -21,7 +21,7 @@ public class MeritBank {
 	private static List<CDOffering> cdOfferings = new ArrayList<CDOffering>();
 	private static double totalBalances;
 	private static int numberOfCDOfferings;
-	private static long accountNumber;
+	private static long accountNumber = 1;
 	private static int numberOfAccountHolders;
 	//private static FraudQueue fraudQueue = new FraudQueue();
 	//private static ArrayList<Transaction> transQueue = new ArrayList<Transaction>();
@@ -158,8 +158,7 @@ public class MeritBank {
 			fileStringArrayList.forEach((listString) -> printWriter.println(listString));
 			return true;
 		} catch (IOException ioe) {System.out.println("Error");}
-		throw new NumberFormatException();
-		//return false;	
+			throw new NumberFormatException();	
 	}
 
 	public static void addAccountHolder(AccountHolder accountHolder) {

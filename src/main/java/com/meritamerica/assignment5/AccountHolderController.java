@@ -16,16 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.meritamerica.models.AccountHolder;
 import com.meritamerica.models.CDAccount;
 import com.meritamerica.models.CheckingAccount;
-import com.meritamerica.models.ExceedsFraudSuspicionLimitException;
 import com.meritamerica.models.MeritBank;
 import com.meritamerica.models.SavingsAccount;
 
 @RestController
 public class AccountHolderController {
-	
-	List<CheckingAccount> checkingAccounts = new ArrayList<CheckingAccount>();
-	List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
-	List<CDAccount> cdAccounts = new ArrayList<CDAccount>();
 	
 	@PostMapping("/account-holders")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -53,7 +48,8 @@ public class AccountHolderController {
 	@PostMapping("/account-holders/{id}/checking-accounts")
 	@ResponseStatus(HttpStatus.CREATED)
 	public CheckingAccount postCheckingAccount(
-			@PathVariable int id, @RequestBody @Valid CheckingAccount checkingAccount ) throws NoSuchResourceFoundException, NegativeAmountException, ExceedsCombinedBalanceLimitException {
+			@PathVariable int id, @RequestBody @Valid CheckingAccount checkingAccount ) 
+					throws NoSuchResourceFoundException, NegativeAmountException, ExceedsCombinedBalanceLimitException {
 		if (checkingAccount.getBalance() < 0) {
 			throw new NegativeAmountException("Only balances above 0 dollars are permitted.");
 		} else if (checkingAccount.getBalance() + MeritBank.getAccountHolders().get(id-1).getCombinedBalance() >= 250000 ){
@@ -70,10 +66,7 @@ public class AccountHolderController {
 			@PathVariable int id) throws NoSuchResourceFoundException{
 		if (id < 0 || id < (MeritBank.getAccountHolders().size() - 1) && MeritBank.getAccountHolders().get(id-1).getCheckingAccounts() != null) {
 			throw new NoSuchResourceFoundException("Account Holder does not exist.");
-		} else if ( ){
-			
-		}
-		{
+		} else {
 			return MeritBank.getAccountHolders().get(id-1).getCheckingAccounts();
 		}
 	}
@@ -81,12 +74,16 @@ public class AccountHolderController {
 	@PostMapping("/account-holders/{id}/savings-accounts")
 	@ResponseStatus(HttpStatus.CREATED)
 	public SavingsAccount postSavingsAccount(
-			@PathVariable int id, @RequestBody @Valid SavingsAccount savingsAccount ) throws NoSuchResourceFoundException{
-		
-		MeritBank.getAccountHolders().get(id-1).addSavingsAccount(savingsAccount);
-		
-		
-		return savingsAccount;
+			@PathVariable int id, @RequestBody @Valid SavingsAccount savingsAccount ) 
+					throws NoSuchResourceFoundException, NegativeAmountException, ExceedsCombinedBalanceLimitException {
+		if (savingsAccount.getBalance() < 0) {
+			throw new NegativeAmountException("Only balances above 0 dollars are permitted.");
+		} else if (savingsAccount.getBalance() + MeritBank.getAccountHolders().get(id-1).getCombinedBalance() >= 250000 ){
+			throw new ExceedsCombinedBalanceLimitException("Exceeds combined balance limit.");
+		} else {
+			MeritBank.getAccountHolders().get(id-1).addSavingsAccount(savingsAccount);
+			return savingsAccount;
+		}
 	}
 	
 	@GetMapping("/account-holders/{id}/savings-accounts")
@@ -103,12 +100,16 @@ public class AccountHolderController {
 	@PostMapping("/account-holders/{id}/cd-accounts")
 	@ResponseStatus(HttpStatus.CREATED)
 	public CDAccount postCDAccount(
-			@PathVariable int id, @RequestBody @Valid CDAccount cdAccount ) throws NoSuchResourceFoundException{
-		
-		MeritBank.getAccountHolders().get(id-1).addCDAccount(cdAccount);
-		
-		
-		return cdAccount;
+			@PathVariable int id, @RequestBody @Valid CDAccount cdAccount ) 
+					throws NoSuchResourceFoundException, NegativeAmountException, ExceedsCombinedBalanceLimitException {
+		if (cdAccount.getBalance() < 0) {
+			throw new NegativeAmountException("Only balances above 0 dollars are permitted.");
+		} else if (cdAccount.getBalance() + MeritBank.getAccountHolders().get(id-1).getCombinedBalance() >= 250000 ){
+			throw new ExceedsCombinedBalanceLimitException("Exceeds combined balance limit.");
+		} else {
+			MeritBank.getAccountHolders().get(id-1).addCDAccount(cdAccount);
+			return cdAccount;
+		}
 	}
 	
 	@GetMapping("/account-holders/{id}/cd-accounts")
@@ -121,11 +122,5 @@ public class AccountHolderController {
 			return MeritBank.getAccountHolders().get(id-1).getCDAccounts();
 		}
 	}
-	
-	
-	
-	
-	
-	
 
 }

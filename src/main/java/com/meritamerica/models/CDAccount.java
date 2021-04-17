@@ -2,6 +2,7 @@ package com.meritamerica.models;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CDAccount extends BankAccount {
 	protected double futureBalance;
@@ -16,6 +17,7 @@ public class CDAccount extends BankAccount {
 		this.term = offering.getTerm();
 		this.tempTerm = term;
 		super.setAccountNumber(MeritBank.getNextAccountNumber());
+		this.accountOpenedOn = new Date();
 	}
 
 	public int getTerm() {
