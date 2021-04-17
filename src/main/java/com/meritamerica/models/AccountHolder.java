@@ -158,7 +158,7 @@ public class AccountHolder implements Comparable<AccountHolder>{
 	}
 		
 	public CDAccount addCDAccount(CDOffering offering, double openingBalance) {
-		CDAccount cdAccount = new CDAccount(offering, openingBalance);
+		CDAccount cdAccount = new CDAccount(offering, (int) openingBalance);
 		cdAccounts.add(cdAccount);
 		numberOfCDAccounts++;
 		return cdAccount;
