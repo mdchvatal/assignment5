@@ -4,14 +4,17 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class AccountHolder implements Comparable<AccountHolder>{
 	private static int nextId = 1;
 	private int id;
-
+	
+	@Max(250000)
 	private double combinedBalance;
+	
 	private List<CDAccount> cdAccounts = new ArrayList<CDAccount>();
 	private List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
 	private List<CheckingAccount> checkingAccounts = new ArrayList<CheckingAccount>();
@@ -95,6 +98,7 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		if (((this.getCheckingBalance() + this.getSavingsBalance()) + openingBalance < 250000)) {
 			checkingAccounts.add(account);
 			numberOfCheckingAccounts++;
+			combinedBalance += openingBalance;
 			return account;
 		} else {
 			return account;
@@ -104,6 +108,7 @@ public class AccountHolder implements Comparable<AccountHolder>{
 	public CheckingAccount addCheckingAccount(BankAccount checkingAccount) {
 		checkingAccounts.add((CheckingAccount) checkingAccount);
 		numberOfCheckingAccounts++;
+		combinedBalance += checkingAccount.getBalance();
 		return (CheckingAccount) checkingAccount;
 	}
 		

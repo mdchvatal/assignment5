@@ -201,6 +201,10 @@ public class MeritBank {
 		}	 	
 	}
 	
+	public static void addCDOffering(CDOffering cdOffering) {
+			cdOfferings.add(cdOffering);	 	
+	}
+	
 	public static long getNextAccountNumber() {
 		return accountNumber++;
 	}

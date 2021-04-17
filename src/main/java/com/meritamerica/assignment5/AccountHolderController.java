@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.meritamerica.models.AccountHolder;
 import com.meritamerica.models.CDAccount;
+import com.meritamerica.models.CDAccountCreator;
+import com.meritamerica.models.CDOffering;
 import com.meritamerica.models.CheckingAccount;
 import com.meritamerica.models.MeritBank;
 import com.meritamerica.models.SavingsAccount;
@@ -99,15 +101,18 @@ public class AccountHolderController {
 	@PostMapping("/account-holders/{id}/cd-accounts")
 	@ResponseStatus(HttpStatus.CREATED)
 	public CDAccount postCDAccount(
-			@PathVariable int id, @RequestBody @Valid CDAccount cdAccount ) 
+			@PathVariable int id, @RequestBody @Valid CDAccountCreator cdAccountCreator)
 					throws NoSuchResourceFoundException, NegativeAmountException, ExceedsCombinedBalanceLimitException {
-		if (cdAccount.getBalance() < 0) {
+		if (cdAccountCreator.getCdAccount().getBalance() < 0) {
 			throw new NegativeAmountException("Only balances above 0 dollars are permitted.");
-		} else if (cdAccount.getBalance() + MeritBank.getAccountHolders().get(id-1).getCombinedBalance() >= 250000 ){
+		} else if (cdAccountCreator.getCdAccount().getBalance() + MeritBank.getAccountHolders().get(id-1).getCombinedBalance() >= 250000 ){
 			throw new ExceedsCombinedBalanceLimitException("Exceeds combined balance limit.");
 		} else {
-			MeritBank.getAccountHolders().get(id-1).addCDAccount(cdAccount);
-			return cdAccount;
+			CDOffering newOffering = MeritBank.getCDOfferings().get(cdAccountCreator.getCdOffering().getId() - 1);
+			CDAccount newAccount = new CDAccount(newOffering,
+					cdAccountCreator.getBalance());
+			MeritBank.getAccountHolders().get(id-1).addCDAccount(newAccount);
+			return newAccount;
 		}
 	}
 	

@@ -1,29 +1,38 @@
 package com.meritamerica.models;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class CDOffering implements Comparable<CDOffering>{
 	
 	protected double futureBalance;
 	
-	@NotBlank
+	
 	@NotNull
+	@Positive
 	private int term;
 	
-	@NotBlank
+	
 	@NotNull
+	@Max(1)
+	@Positive
 	private double interestRate;
 	
 	private static int nextId = 1;
 	private int id;
 	
-	
-	
-	public CDOffering () {
-		
+	public CDOffering() {
 	}
 	
+	public CDOffering(int id) {
+		this.interestRate = MeritBank.getCDOfferings().get(id-1).getInterestRate();
+		this.term = MeritBank.getCDOfferings().get(id-1).getTerm();
+		this.id = id;
+	}
+	
+
 	public CDOffering(int term, double interestRate) {
 		this.term = term;
 		this.interestRate = interestRate;
@@ -44,6 +53,14 @@ public class CDOffering implements Comparable<CDOffering>{
 	
 	public void setInterestRate(double interestRate) {
 		this.interestRate = interestRate;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Override

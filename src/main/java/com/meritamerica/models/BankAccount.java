@@ -3,6 +3,10 @@ package com.meritamerica.models;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 import java.lang.NumberFormatException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,8 +14,14 @@ import java.text.SimpleDateFormat;
 public abstract class BankAccount {
 	
 	protected long accountNumber;
+	
+	@Positive
+	@NotNull
 	protected double balance;
 	protected Date accountOpenedOn; 
+	
+	@Positive
+	@NotNull
 	protected double interestRate;
 	//private List<Transaction> transactions = new ArrayList<Transaction>();
 	

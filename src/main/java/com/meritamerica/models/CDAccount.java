@@ -4,21 +4,42 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CDAccount extends BankAccount {
+	
+	int tempTerm;
 	protected double futureBalance;
 	private int term;
-	private int tempTerm;
-
+	private double interestRate;
+	private CDOffering cdOffering;
+	
 	public CDAccount() {
+		this.accountNumber = MeritBank.getNextAccountNumber();
 	}
-
-	public CDAccount(CDOffering offering, double balance) {
-		super(balance, offering.getInterestRate());
+	
+	public CDAccount(CDOffering offering, int balance) {
+		this.balance = balance;
 		this.term = offering.getTerm();
-		this.tempTerm = term;
 		super.setAccountNumber(MeritBank.getNextAccountNumber());
 		this.accountOpenedOn = new Date();
+		this.setCdOffering(offering);
+		this.interestRate = offering.getInterestRate();
 	}
+	
+	public CDAccount(double balance, int id) {
+		CDOffering newOffering = MeritBank.getCDOfferings().get(id-1);
+		this.balance = balance;
+		this.term = newOffering.getTerm();
+		super.setAccountNumber(MeritBank.getNextAccountNumber());
+		this.accountOpenedOn = new Date();
+		this.setCdOffering(newOffering);
+		this.interestRate = newOffering.getInterestRate();
+	}
+
 
 	public int getTerm() {
 		return term;
@@ -57,12 +78,28 @@ public class CDAccount extends BankAccount {
 		return futureBalance;
 	}
 	
+	public CDOffering getCdOffering() {
+		return cdOffering;
+	}
+
+	public void setCdOffering(CDOffering cdOffering) {
+		this.cdOffering = cdOffering;
+	}
+
 	public void resetFutureBalance() {
 		this.futureBalance = getBalance();
 	}
 	
 	public void resetTempTerm() {
 		this.tempTerm = this.term;
+	}
+	
+	public double getInterestRate() {
+		return interestRate;
+	}
+
+	public void setInterestRate(double interestRate) {
+		this.interestRate = interestRate;
 	}
 	
 	
