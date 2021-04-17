@@ -2,6 +2,7 @@ package com.meritamerica.models;
 
 public class CDOffering implements Comparable<CDOffering>{
 	
+	protected double futureBalance;
 	private int term;
 	private double interestRate;
 	

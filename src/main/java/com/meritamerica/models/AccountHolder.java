@@ -90,29 +90,21 @@ public class AccountHolder implements Comparable<AccountHolder>{
 	}
 	
 	public CheckingAccount addCheckingAccount(double openingBalance) {
-		if (openingBalance >= 1000) {
-			throw new ExceedsFraudSuspicionLimitException();
+		CheckingAccount account = new CheckingAccount(openingBalance);
+		account.setInterestRate(MeritBank.getCheckingInterest());
+		if (((this.getCheckingBalance() + this.getSavingsBalance()) + openingBalance < 250000)) {
+			checkingAccounts.add(account);
+			numberOfCheckingAccounts++;
+			return account;
 		} else {
-			CheckingAccount account = new CheckingAccount(openingBalance);
-			account.setInterestRate(MeritBank.getCheckingInterest());
-			if (((this.getCheckingBalance() + this.getSavingsBalance()) + openingBalance < 250000)) {
-				checkingAccounts.add(account);
-				numberOfCheckingAccounts++;
-				return account;
-			} else {
-				return account;
-			}
+			return account;
 		}
 	}
 	
 	public CheckingAccount addCheckingAccount(BankAccount checkingAccount) {
-		if ((this.getCheckingBalance() + this.getSavingsBalance()) + checkingAccount.getBalance() < 250000) {
-			checkingAccounts.add((CheckingAccount) checkingAccount);
-			numberOfCheckingAccounts++;
-			return (CheckingAccount) checkingAccount;
-		} else {
-			return (CheckingAccount) checkingAccount;
-		}
+		checkingAccounts.add((CheckingAccount) checkingAccount);
+		numberOfCheckingAccounts++;
+		return (CheckingAccount) checkingAccount;
 	}
 		
 	public List<CheckingAccount> getCheckingAccounts() {
@@ -131,28 +123,17 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		return tempBalance;
 	}
 		
-	public SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsFraudSuspicionLimitException {
-		if (openingBalance >= 1000) {
-			throw new ExceedsFraudSuspicionLimitException();
-		}
+	public SavingsAccount addSavingsAccount(double openingBalance) {
 		SavingsAccount account = new SavingsAccount(openingBalance);
-		if (((this.getCheckingBalance() + this.getSavingsBalance()) + openingBalance <= 250000)) {
-			savingsAccounts.add(account);
-			numberOfSavingsAccounts++;
-			return account;
-		} else {
-			return  account;
-		}
+		savingsAccounts.add(account);
+		numberOfSavingsAccounts++;
+		return account;
 	}
 	
 	public SavingsAccount addSavingsAccount(BankAccount savingsAccount) {
-		if ((this.getCheckingBalance() + this.getSavingsBalance()) + savingsAccount.getBalance() < 250000) {
-			savingsAccounts.add((SavingsAccount) savingsAccount);
-			numberOfSavingsAccounts++;
-			return (SavingsAccount) savingsAccount;
-		} else {
-			return (SavingsAccount) savingsAccount;
-		}
+		savingsAccounts.add((SavingsAccount) savingsAccount);
+		numberOfSavingsAccounts++;
+		return (SavingsAccount) savingsAccount;
 	}
 	
 	public List<SavingsAccount> getSavingsAccounts() {
@@ -171,10 +152,7 @@ public class AccountHolder implements Comparable<AccountHolder>{
 		return tempBalance;
 	}
 		
-	public CDAccount addCDAccount(CDOffering offering, double openingBalance) throws ExceedsFraudSuspicionLimitException {
-		if (openingBalance >= 1000) {
-			throw new ExceedsFraudSuspicionLimitException();
-		}
+	public CDAccount addCDAccount(CDOffering offering, double openingBalance) {
 		CDAccount cdAccount = new CDAccount(offering, openingBalance);
 		cdAccounts.add(cdAccount);
 		numberOfCDAccounts++;

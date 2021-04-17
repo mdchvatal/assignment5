@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public abstract class BankAccount {
-	protected double futureBalance;
+	
 	protected long accountNumber;
 	protected double balance;
 	protected Date accountOpenedOn; 
@@ -20,7 +20,6 @@ public abstract class BankAccount {
 	
 	public BankAccount(double openingBalance) {
 		this.balance = openingBalance;
-		this.futureBalance = openingBalance;
 		this.accountNumber = MeritBank.getNextAccountNumber();
 		this.accountOpenedOn = new Date();
 	}
@@ -108,25 +107,7 @@ public abstract class BankAccount {
 		return (getBalance() * Math.pow((1+interestRate), years));
 	}*/
 	
-	public double futureValue(int years) {
-	    if (years == 0) {
-	    	double tempBalance;
-	    	tempBalance = futureBalance;
-	    	resetFutureBalance();
-	        return tempBalance;
-	    } else {
-	        futureBalance = futureBalance * (1 + getInterestRate());
-	        return futureValue(--years);
-	    }
-	}
-	    
-	public double getFutureBalance() {
-		futureBalance = balance;
-		return futureBalance;
-	}
-	public void resetFutureBalance() {
-		futureBalance = getBalance();
-	}
+	
 
 	@Override
 	public String toString() {

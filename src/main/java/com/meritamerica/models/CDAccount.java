@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class CDAccount extends BankAccount {
+	protected double futureBalance;
 	private int term;
 	private int tempTerm;
 
@@ -61,6 +62,8 @@ public class CDAccount extends BankAccount {
 	public void resetTempTerm() {
 		this.tempTerm = this.term;
 	}
+	
+	
 	
 	public static CDAccount readFromString(String accountData) throws ParseException{
 		CDAccount fromStringAccount = new CDAccount();
