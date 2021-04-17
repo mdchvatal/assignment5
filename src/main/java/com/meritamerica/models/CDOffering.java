@@ -1,10 +1,24 @@
 package com.meritamerica.models;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class CDOffering implements Comparable<CDOffering>{
 	
 	protected double futureBalance;
+	
+	@NotBlank
+	@NotNull
 	private int term;
+	
+	@NotBlank
+	@NotNull
 	private double interestRate;
+	
+	private static int nextId = 1;
+	private int id;
+	
+	
 	
 	public CDOffering () {
 		
@@ -13,6 +27,7 @@ public class CDOffering implements Comparable<CDOffering>{
 	public CDOffering(int term, double interestRate) {
 		this.term = term;
 		this.interestRate = interestRate;
+		this.id = nextId++;
 	}
 
 	public int getTerm() {

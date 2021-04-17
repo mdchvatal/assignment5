@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,7 @@ import com.meritamerica.models.CDAccount;
 import com.meritamerica.models.MeritBank;
 
 public class CDAccountController {
-	@GetMapping("/AccountHolders/{id}/CDAccounts")
+	@GetMapping("account-holders/{id}/cdaccounts")
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<BankAccount> getCDAccounts(@PathVariable(name = "id") long id) throws NoSuchResourceFoundException {
 		AccountHolder acctholder = MeritBank.getAccountHolder(id);
@@ -26,7 +27,7 @@ public class CDAccountController {
 		return acctholder.getCdAccounts();
 	}
 
-	@PostMapping("AccountHolders/{id}/CDAccounts")
+	@PostMapping("account-holders/{id}/cdaccounts")
 	@ResponseStatus(HttpStatus.CREATED)
 	public CDAccount addCDAccount(@PathVariable(name = "id") long id, @RequestBody @Valid CDAccount cdAccount)
 			throws NotFoundException, ExceedsCombinedBalanceLimitException, NegativeAmountException {
